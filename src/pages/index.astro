@@ -46,7 +46,7 @@ import Base from '../layouts/Base.astro';
     <span class="section-label">// Recent Works</span>
 
     <div class="carousel-wrapper">
-      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(1)">&#8249;</button>
+      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(-1)">&#8249;</button>
 
       <div class="carousel-clip">
         <div class="carousel-track" id="carouselTrack">
@@ -64,7 +64,7 @@ import Base from '../layouts/Base.astro';
 
           <div class="work-card">
             <div class="work-card-thumb">
-              <img src="/assets/worleynoise.jpg" alt="WorleyNoise" />
+              <img src="/assets/Worley.png" alt="WorleyNoise" />
             </div>
             <div class="work-card-info">
               <h3>WorleyNoise</h3>
@@ -95,7 +95,7 @@ import Base from '../layouts/Base.astro';
         </div>
       </div>
 
-      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(-1)">&#8250;</button>
+      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(1)">&#8250;</button>
     </div>
   </section>
 
