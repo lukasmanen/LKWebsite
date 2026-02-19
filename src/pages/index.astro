@@ -1,0 +1,223 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base>
+
+  <!-- HERO -->
+  <section class="hero container">
+     <!-- Divider + backgroundVideo -->
+    <video autoplay muted loop playsinline class="background-video">
+      <source src="/assets/Mocap_Group3_Option1.mp4" type="video/mp4" />
+    </video>
+
+    <span class="section-label">// VFX Artist & Compositor</span>
+    <h1>Lukas<br /><span class="accent">Kelloniemi</span></h1>
+    <p>I am an upcoming Junior Compositor driven by a curiosity for how images are built
+    from the ground up. I am a proficient Python developer specializing in custom UI tools
+    and pipeline automation, but I am constantly pushing further into the image engine.
+    I picked up BlinkScript in August 2025 and have since begun exploring the Nuke NDK,
+    though my knowledge of C++ is currently limited and I am very much in the early stages
+    of that journey.
+
+    I believe that truly impactful tools are born from creative necessity. Because I am
+    fresh to the industry, my primary mission is building the "Eye." By immersing myself
+    in the artistry of light, color, and integration, I am developing the essential
+    perspective required to eventually build sophisticated, artist focused VFX tools.
+    I am dedicated to mastering the art of compositing today so that I can better engineer
+    the craft tomorrow.</p>
+    <div class="hero-btns">
+      <a href="#reel" class="btn btn-accent">Watch Reel ↓</a>
+      <a href="/contact" class="btn btn-ghost">Contact</a>
+    </div>
+  </section>
+ 
+  <!-- DEMO REEL -->
+  <section id="reel" class="reel-section container">
+    <span class="section-label">// Demo Reel</span>
+    <div class="reel-wrapper">
+      <video controls playsinline poster="/assets/reel-poster.jpg">
+        <source src="/assets/demoreel.mp4" type="video/mp4" />
+      </video>
+    </div>
+  </section>
+
+  <!-- RECENT WORKS -->
+  <section class="works-section container">
+    <span class="section-label">// Recent Works</span>
+
+    <div class="carousel-wrapper">
+      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(1)">&#8249;</button>
+
+      <div class="carousel-clip">
+        <div class="carousel-track" id="carouselTrack">
+
+          <div class="work-card">
+            <div class="work-card-thumb">
+              <img src="/assets/ColorRampPicture.png" alt="ColorRamp" />
+            </div>
+            <div class="work-card-info">
+              <h3>ColorRamp</h3>
+              <p>NukeX · Python · Blinkscript · C++</p>
+            </div>
+          </div>
+
+          <div class="work-card">
+            <div class="work-card-thumb">
+              <img src="/assets/worleynoise.jpg" alt="WorleyNoise" />
+            </div>
+            <div class="work-card-info">
+              <h3>WorleyNoise</h3>
+              <p>NukeX · Blinkscript</p>
+            </div>
+          </div>
+
+          <div class="work-card">
+            <div class="work-card-thumb">
+              <img src="/assets/pixelfixer.jpg" alt="PixelFixer" />
+            </div>
+            <div class="work-card-info">
+              <h3>PixelFixer</h3>
+              <p>NukeX · Blinkscript · Firefly Removal</p>
+            </div>
+          </div>
+
+          <div class="work-card">
+            <div class="work-card-thumb">
+              <img src="/assets/colorisolator.jpg" alt="ColorIsolator" />
+            </div>
+            <div class="work-card-info">
+              <h3>ColorIsolator</h3>
+              <p>NukeX · Blinkscript</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(-1)">&#8250;</button>
+    </div>
+  </section>
+
+<script is:inline>
+  let current = 0;
+  let isAnimating = false;
+  let cardWidth = 0;
+  let gap = 0;
+  let originalCount = 0;
+  let initialized = false;
+
+  function initCarousel() {
+    if (initialized) return;          
+    initialized = true;
+
+    const track = document.getElementById('carouselTrack');
+    if (!track) return;
+
+    const original = Array.from(track.querySelectorAll('.work-card'));
+    originalCount = original.length;
+
+    
+    const fragment = document.createDocumentFragment();
+    original.forEach(card => {
+      const clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      fragment.appendChild(clone);
+    });
+    track.insertBefore(fragment, track.firstChild);
+
+    
+    original.forEach(card => {
+      const clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    });
+
+    
+    const allCards = track.querySelectorAll('.work-card');
+    gap = parseFloat(window.getComputedStyle(track).gap) || 24;
+    cardWidth = allCards[0].getBoundingClientRect().width + gap;
+
+   
+    current = originalCount;
+    track.style.transition = 'none';
+    track.style.transform = 'translateX(-' + (current * cardWidth) + 'px)';
+    setInterval(function () {
+      scrollCarousel(1);
+    }, 7500);
+  }
+
+  function scrollCarousel(direction) {
+    if (isAnimating) return;
+
+    const track = document.getElementById('carouselTrack');
+    if (!track) return;
+
+    const allCards = track.querySelectorAll('.work-card');
+    gap = parseFloat(window.getComputedStyle(track).gap) || 24;
+    cardWidth = allCards[0].getBoundingClientRect().width + gap;
+
+    current += direction;
+    isAnimating = true;
+
+    track.style.transition = 'transform 0.4s ease-in-out';
+    track.style.transform = 'translateX(-' + (current * cardWidth) + 'px)';
+
+    setTimeout(function () {
+      
+      if (current <= originalCount - 1) {
+        current = current + originalCount;
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-' + (current * cardWidth) + 'px)';
+      }
+      if (current >= originalCount * 2) {
+        current = current - originalCount;
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-' + (current * cardWidth) + 'px)';
+      }
+      isAnimating = false;
+    }, 400);
+  }
+
+  document.addEventListener('DOMContentLoaded', initCarousel);
+</script>
+
+
+
+  <!-- SKILLS -->
+  <section class="skills-section container">
+    <span class="section-label">// Skills</span>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <h3>Compositing</h3>
+        <ul>
+          <li>NukeX</li>
+          <li>Python automation</li>
+          
+          <li>Node Graph Design</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <h3>Programming</h3>
+        <ul>
+          <li>Python</li>
+          <li>BlinkScript (Learning)</li>
+          <li>C++ (Learning)</li>
+          <li>PySide6</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <h3>Pipeline</h3>
+        <ul>
+          <li>Custom Gizmos</li>
+          <li>Automation</li>
+          <li>UI/UX for VFX</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+</Base>

@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+const { frontmatter = {}, content = '' } = Astro.props;
+--- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{frontmatter.title} — Lukas Kelloniemi</title> 
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">LK_</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/code">Code</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+ <main>
+  <article class="post-content">
+    <span class ="secetion-label">// {frontmatter.category}</span>
+    <h1>{frontmatter.title}</h1>
+    <p class="post-date">{frontmatter.date}</p>
+    <hr class="post-divider" />
+    <slot />
+  </article>
+</main>
+
+  <footer>
+    © {new Date().getFullYear()} Lukas Kelloniemi
+  </footer>  
+</body>
+</html>

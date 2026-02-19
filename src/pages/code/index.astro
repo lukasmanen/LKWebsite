@@ -1,0 +1,109 @@
+---
+import Base from '../../layouts/Base.astro';
+
+interface Frontmatter {
+  title: string;
+  date: string;
+  summary: string;
+  tags: string[];
+  image?: string;
+}
+
+interface Post {
+  url: string;
+  frontmatter: Frontmatter;
+}
+
+const posts = Object.values(
+  import.meta.glob<Post>('./posts/*.md', { eager: true })
+);
+
+const sorted = posts.sort(
+  (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+);
+---
+<Base title="Code — Lukas Kelloniemi">
+  <div class="container">
+    <section class="blog-section">
+      <span class="section-label">// Code & Projects</span>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="python">Python</button>
+        <button class="filter-btn" data-filter="blinkscript">BlinkScript</button>
+        <button class="filter-btn" data-filter="expressions">Expressions</button>
+        <button class="sort-btn" id="sortBtn">Date ↓ Newest</button>
+      </div>
+
+      <div class="post-list">
+        {sorted.map((post) => (
+          <a
+            href={post.url}
+            class="post-item"
+            data-tags={post.frontmatter.tags?.join(' ').toLowerCase()}
+            data-date={post.frontmatter.date}
+          >
+            {post.frontmatter.image && (
+              <div class="post-thumb">
+                <img src={post.frontmatter.image} alt={post.frontmatter.title} />
+              </div>
+            )}
+            <div class="post-body">
+              <span class="post-date">{post.frontmatter.date}</span>
+              <div class="post-title">{post.frontmatter.title}</div>
+              <div class="post-summary">{post.frontmatter.summary}</div>
+              <div class="post-tags">
+                {post.frontmatter.tags?.map((tag: string) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script is:inline>
+  // ── FILTER ──
+  const buttons = document.querySelectorAll('.filter-btn');
+  const items = document.querySelectorAll('.post-item');
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const filter = btn.getAttribute('data-filter');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      items.forEach(function(item) {
+        const tags = item.getAttribute('data-tags') || '';
+        if (filter === 'all' || tags.includes(filter)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // ── SORT ──
+  let newestFirst = true;
+  const sortBtn = document.getElementById('sortBtn');
+  const postList = document.querySelector('.post-list');
+
+  if (sortBtn && postList) {
+    sortBtn.addEventListener('click', function() {
+      newestFirst = !newestFirst;
+      sortBtn.textContent = newestFirst ? 'Date ↓ Newest' : 'Date ↑ Oldest';
+
+      const posts = Array.from(postList.querySelectorAll('.post-item'));
+      posts.sort(function(a, b) {
+        const dateA = new Date(a.getAttribute('data-date') || '').getTime();
+        const dateB = new Date(b.getAttribute('data-date') || '').getTime();
+        return newestFirst ? dateB - dateA : dateA - dateB;
+      });
+
+      posts.forEach(function(post) { postList.appendChild(post); });
+    });
+  }
+</script>
