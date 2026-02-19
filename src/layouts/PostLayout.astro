@@ -28,6 +28,9 @@ const { frontmatter = {}, content = '' } = Astro.props;
     <span class ="secetion-label">// {frontmatter.category}</span>
     <h1>{frontmatter.title}</h1>
     <p class="post-date">{frontmatter.date}</p>
+    {frontmatter.image && (
+        <img src={frontmatter.image} alt={frontmatter.title} class="post-image" />
+      )}
     <hr class="post-divider" />
     <slot />
   </article>
