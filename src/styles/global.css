@@ -191,9 +191,13 @@ footer {
 .hero p {
   max-width: 480px;
   font-size: 1rem;
+  font-weight: bolder;
   color: var(--text);
   margin-bottom: 2.5rem;
- 
+  background-color: rgba(0.1, 0.1, 0.1, 0.75);
+  padding: 1rem 1.5rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
 }
 .hero-btns {
   display: flex;

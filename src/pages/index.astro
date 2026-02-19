@@ -11,7 +11,7 @@ import Base from '../layouts/Base.astro';
     </video>
 
     <span class="section-label">// VFX Artist & Compositor</span>
-    <h1>Lukas<br /><span class="accent">Kelloniemi</span></h1>
+    <h1><span class="white">Lukas</span><br/><span class="accent">Kelloniemi</span></h1>
     <p>I am an upcoming Junior Compositor driven by a curiosity for how images are built
     from the ground up. I am a proficient Python developer specializing in custom UI tools
     and pipeline automation, but I am constantly pushing further into the image engine.
@@ -46,7 +46,7 @@ import Base from '../layouts/Base.astro';
     <span class="section-label">// Recent Works</span>
 
     <div class="carousel-wrapper">
-      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(-1)">&#8249;</button>
+      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(1)">&#8249;</button>
 
       <div class="carousel-clip">
         <div class="carousel-track" id="carouselTrack">
@@ -95,7 +95,7 @@ import Base from '../layouts/Base.astro';
         </div>
       </div>
 
-      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(1)">&#8250;</button>
+      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(-1)">&#8250;</button>
     </div>
   </section>
 
