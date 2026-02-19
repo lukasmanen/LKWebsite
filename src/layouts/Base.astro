@@ -18,11 +18,12 @@ const { title = "Lukas Kelloniemi — VFX Artist" } = Astro.props;
     <div class="nav-inner">
       <a href="/" class="nav-logo">LK_</a>
       <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/code">Code</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
+       <a href={`${import.meta.env.BASE_URL}`}>Home</a>
+      <a href={`${import.meta.env.BASE_URL}about`}>About</a>
+      <a href={`${import.meta.env.BASE_URL}code`}>Code</a>
+      <a href={`${import.meta.env.BASE_URL}contact`}>Contact</a>
+
+       </ul>
     </div>
   </nav>
 
