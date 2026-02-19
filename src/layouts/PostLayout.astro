@@ -13,12 +13,13 @@ const { frontmatter = {}, content = '' } = Astro.props;
 
   <nav>
     <div class="nav-inner">
-      <a href="/" class="nav-logo">LK_</a>
+      <a href={`${import.meta.env.BASE_URL}/`} class="nav-logo">LK_</a>
       <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/code">Code</a></li>
-        <li><a href="/contact">Contact</a></li>
+          <li></li><a href={`${import.meta.env.BASE_URL}/`}>Home</a></li>
+          <li></li><a href={`${import.meta.env.BASE_URL}/about`}>About</a></li>
+          <li><a href={`${import.meta.env.BASE_URL}/code`}>Code</a></li>
+          <li><a href={`${import.meta.env.BASE_URL}/contact`}>Contact</a></li>
+
       </ul>
     </div>
   </nav>
