@@ -8,6 +8,7 @@ const { frontmatter = {}, content = '' } = Astro.props;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{frontmatter.title} — Lukas Kelloniemi</title> 
+  <link rel="icon" type="image/x-icon" href="/LKIcon.ico" />
 </head>
 <body>
 
@@ -22,21 +23,109 @@ const { frontmatter = {}, content = '' } = Astro.props;
       </ul>
     </div>
   </nav>
- <main>
-  <article class="post-content">
-    <span class ="secetion-label">// {frontmatter.category}</span>
-    <h1>{frontmatter.title}</h1>
-    <p class="post-date">{frontmatter.date}</p>
-    {frontmatter.image && (
+
+  <main>
+    <article class="post-content">
+      <span class="section-label">// {frontmatter.category}</span>
+      <h1>{frontmatter.title}</h1>
+      <p class="post-date">{frontmatter.date}</p>
+      {frontmatter.image && (
         <img src={frontmatter.image} alt={frontmatter.title} class="post-image" />
       )}
-    <hr class="post-divider" />
-    <slot />
-  </article>
-</main>
+      <hr class="post-divider" />
+      <slot />
+    </article>
+  </main>
 
   <footer>
     © {new Date().getFullYear()} Lukas Kelloniemi
-  </footer>  
+  </footer>
+
+  <!-- CHEATSHEET (dev only) -->
+  <button id="cheatToggle" onclick="document.getElementById('cheatsheet').classList.toggle('open')">?</button>
+
+  <div id="cheatsheet">
+    <div class="cheat-header">
+      <span>// Markdown Cheatsheet</span>
+      <button onclick="document.getElementById('cheatsheet').classList.remove('open')">x</button>
+    </div>
+    <div class="cheat-body">
+
+      <div class="cheat-group">
+        <div class="cheat-label">HEADINGS</div>
+        <code>## Section</code><span>white + divider</span>
+        <code>### Subsection</code><span>accent color</span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">TEXT</div>
+        <code>**bold**</code><span>bold</span>
+        <code>*italic*</code><span>italic</span>
+        <code>`inline code`</code><span>accent box</span>
+        <code>&gt; quote</code><span>blockquote</span>
+        <code>---</code><span>divider line</span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">LISTS</div>
+        <code>- item</code><span>bullet list</span>
+        <code>1. item</code><span>numbered list</span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">CODE BLOCK</div>
+        <code>```cpp</code><span>syntax block</span>
+        <code>```python</code><span></span>
+        <code>```</code><span>close block</span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">IMAGE</div>
+        <code>![alt](/assets/img.png)</code><span>full width</span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">FIGURE + CAPTION</div>
+        <code>&lt;figure&gt;</code><span></span>
+        <code>&lt;img src="/assets/x.png" /&gt;</code><span></span>
+        <code>&lt;figcaption&gt;text&lt;/figcaption&gt;</code><span></span>
+        <code>&lt;/figure&gt;</code><span></span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">VIDEO LOOP (silent)</div>
+        <code>&lt;video autoplay muted loop&gt;</code><span></span>
+        <code>&lt;source src="/assets/x.mp4" /&gt;</code><span></span>
+        <code>&lt;/video&gt;</code><span></span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">VIDEO PLAYER</div>
+        <code>&lt;video controls playsinline&gt;</code><span></span>
+        <code>&lt;source src="/assets/x.mp4" /&gt;</code><span></span>
+        <code>&lt;/video&gt;</code><span></span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">SIDE BY SIDE</div>
+        <code>&lt;div style="display:grid;</code><span></span>
+        <code>grid-template-columns:1fr 1fr;</code><span></span>
+        <code>gap:1rem; margin:2rem 0;"&gt;</code><span></span>
+        <code>&lt;img src="/assets/a.png" /&gt;</code><span></span>
+        <code>&lt;img src="/assets/b.png" /&gt;</code><span></span>
+        <code>&lt;/div&gt;</code><span></span>
+      </div>
+
+      <div class="cheat-group">
+        <div class="cheat-label">YOUTUBE EMBED</div>
+        <code>&lt;div style="aspect-ratio:16/9"&gt;</code><span></span>
+        <code>&lt;iframe src="youtube.com/embed/ID"</code><span></span>
+        <code>style="width:100%;height:100%"&gt;</code><span></span>
+        <code>&lt;/div&gt;</code><span></span>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>

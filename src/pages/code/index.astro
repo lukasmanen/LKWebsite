@@ -16,27 +16,27 @@ interface Post {
 
 const posts = Object.values(
   import.meta.glob<Post>('./posts/*.md', { eager: true })
-);
-
-const sorted = posts.sort(
+).sort(
   (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
 );
 ---
+
 <Base title="Code — Lukas Kelloniemi">
   <div class="container">
     <section class="blog-section">
-      <span class="section-label">// Code & Projects</span>
+      <span class="section-label">// Code & Recent Projects</span>
 
       <div class="filter-bar">
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="python">Python</button>
         <button class="filter-btn" data-filter="blinkscript">BlinkScript</button>
         <button class="filter-btn" data-filter="expressions">Expressions</button>
+        <button class="filter-btn" data-filter="projects">Projects</button>
         <button class="sort-btn" id="sortBtn">Date ↓ Newest</button>
       </div>
 
       <div class="post-list">
-        {sorted.map((post) => (
+        {posts.map((post) => (
           <a
             href={post.url}
             class="post-item"
@@ -45,7 +45,11 @@ const sorted = posts.sort(
           >
             {post.frontmatter.image && (
               <div class="post-thumb">
-                <img src={post.frontmatter.image} alt={post.frontmatter.title} />
+                <img
+                  src={post.frontmatter.image}
+                  alt={post.frontmatter.title}
+                  loading="lazy"
+                />
               </div>
             )}
             <div class="post-body">
@@ -61,49 +65,121 @@ const sorted = posts.sort(
           </a>
         ))}
       </div>
+
+      <div class="pagination" id="pagination"></div>
+
     </section>
   </div>
 </Base>
 
 <script is:inline>
-  // ── FILTER ──
-  const buttons = document.querySelectorAll('.filter-btn');
-  const items = document.querySelectorAll('.post-item');
+  const PAGE_SIZE = 7;
+  const WINDOW = 2;
+  let currentPage = 1;
+  let activeFilter = 'all';
+  let newestFirst = true;
 
-  buttons.forEach(function(btn) {
+  const allItems = Array.from(document.querySelectorAll('.post-item'));
+
+  function getFiltered() {
+    return allItems.filter(function(item) {
+      const tags = item.getAttribute('data-tags') || '';
+      return activeFilter === 'all' || tags.includes(activeFilter);
+    });
+  }
+
+  function getSorted(items) {
+    return items.slice().sort(function(a, b) {
+      const dateA = new Date(a.getAttribute('data-date') || '').getTime();
+      const dateB = new Date(b.getAttribute('data-date') || '').getTime();
+      return newestFirst ? dateB - dateA : dateA - dateB;
+    });
+  }
+
+  function addPageBtn(pagination, i) {
+  const btn = document.createElement('button');
+  btn.textContent = i;
+  btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+  btn.addEventListener('click', function() { currentPage = i; render(); });
+  pagination.appendChild(btn);
+}
+
+
+  function addDots(pagination) {
+    const dots = document.createElement('span');
+    dots.textContent = '...';
+    dots.className = 'page-dots';
+    pagination.appendChild(dots);
+  }
+
+  function render() {
+    const filtered = getSorted(getFiltered());
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const visible = filtered.slice(start, start + PAGE_SIZE);
+
+    allItems.forEach(function(item) { item.style.display = 'none'; });
+    visible.forEach(function(item) { item.style.display = 'flex'; });
+
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    // Prev arrow
+    const prev = document.createElement('button');
+    prev.innerHTML = '&#8249;';
+    prev.className = 'page-btn page-arrow' + (currentPage === 1 ? ' disabled' : '');
+    prev.disabled = currentPage === 1;
+    prev.addEventListener('click', function() { currentPage--; render(); });
+    pagination.appendChild(prev);
+
+    // Windowed numbered buttons: ‹ 1 ... 9 10 [11] 12 13 ... 20 ›
+    let lastPrinted = 0;
+    for (let i = 1; i <= totalPages; i++) {
+      const isFirst = i === 1;
+      const isLast = i === totalPages;
+      const inWindow = i >= currentPage - WINDOW && i <= currentPage + WINDOW;
+
+      if (isFirst || isLast || inWindow) {
+        if (lastPrinted && i - lastPrinted > 1) addDots(pagination);
+        addPageBtn(pagination, i, currentPage);
+        lastPrinted = i;
+      }
+    }
+
+    // Next arrow
+    const next = document.createElement('button');
+    next.innerHTML = '&#8250;';
+    next.className = 'page-btn page-arrow' + (currentPage === totalPages ? ' disabled' : '');
+    next.disabled = currentPage === totalPages;
+    next.addEventListener('click', function() { currentPage++; render(); });
+    pagination.appendChild(next);
+  }
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      const filter = btn.getAttribute('data-filter');
-      buttons.forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      items.forEach(function(item) {
-        const tags = item.getAttribute('data-tags') || '';
-        if (filter === 'all' || tags.includes(filter)) {
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
-        }
+      document.querySelectorAll('.filter-btn').forEach(function(b) {
+        b.classList.remove('active');
       });
+      btn.classList.add('active');
+      activeFilter = btn.getAttribute('data-filter');
+      currentPage = 1;
+      render();
     });
   });
 
-  // ── SORT ──
-  let newestFirst = true;
+  // Sort button
   const sortBtn = document.getElementById('sortBtn');
-  const postList = document.querySelector('.post-list');
-
-  if (sortBtn && postList) {
+  if (sortBtn) {
     sortBtn.addEventListener('click', function() {
       newestFirst = !newestFirst;
       sortBtn.textContent = newestFirst ? 'Date ↓ Newest' : 'Date ↑ Oldest';
-
-      const posts = Array.from(postList.querySelectorAll('.post-item'));
-      posts.sort(function(a, b) {
-        const dateA = new Date(a.getAttribute('data-date') || '').getTime();
-        const dateB = new Date(b.getAttribute('data-date') || '').getTime();
-        return newestFirst ? dateB - dateA : dateA - dateB;
-      });
-
-      posts.forEach(function(post) { postList.appendChild(post); });
+      currentPage = 1;
+      render();
     });
   }
+
+  render();
 </script>
