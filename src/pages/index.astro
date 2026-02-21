@@ -23,8 +23,7 @@ import Base from '../layouts/Base.astro';
     fresh to the industry, my primary mission is building the "Eye." By immersing myself
     in the artistry of light, color, and integration, I am developing the essential
     perspective required to eventually build sophisticated, artist focused VFX tools.
-    I am dedicated to mastering the art of compositing today so that I can better engineer
-    the craft tomorrow.</p>
+    </p>
     <div class="hero-btns">
       <a href="#reel" class="btn btn-accent">Watch Reel ↓</a>
       <a href="/contact" class="btn btn-ghost">Contact</a>
@@ -35,67 +34,80 @@ import Base from '../layouts/Base.astro';
   <section id="reel" class="reel-section container">
     <span class="section-label">// Demo Reel</span>
     <div class="reel-wrapper">
-      <video controls playsinline poster="/assets/reel-poster.jpg">
-        <source src="/assets/demoreel.mp4" type="video/mp4" />
-      </video>
+      <iframe
+        id="demoReelPlayer"
+        src="https://www.youtube.com/embed/hMlzR3rLaNw?playsinline=1&rel=0&vq=hd1080&enablejsapi=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
     </div>
-  </section>
 
   <!-- RECENT WORKS -->
   <section class="works-section container">
     <span class="section-label">// Recent Works</span>
 
     <div class="carousel-wrapper">
-      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(1)">&#8249;</button>
+      <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(-1)">&#8249;</button>
 
       <div class="carousel-clip">
         <div class="carousel-track" id="carouselTrack">
 
-          <div class="work-card">
+            <a href="/code/posts/ColorRamp" class="work-card">
             <div class="work-card-thumb">
-              <img src={`/assets/ColorRampPicture.png`} />
-
+              <img src="/assets/ColorRamp/Colorramp.png" alt="ColorRamp" />
             </div>
             <div class="work-card-info">
               <h3>ColorRamp</h3>
               <p>NukeX · Python · Blinkscript · C++</p>
             </div>
-          </div>
+          </a>
 
-          <div class="work-card">
+         <a href="/code/posts/WorleyNoise" class="work-card">
             <div class="work-card-thumb">
-              <img src="/assets/Worley.png" alt="WorleyNoise" />
+              <img src="/assets/WorleyNoise/WorleyCarousel.jpg" alt="WorleyNoise" />
             </div>
             <div class="work-card-info">
               <h3>WorleyNoise</h3>
               <p>NukeX · Blinkscript</p>
             </div>
-          </div>
+          </a>
 
-          <div class="work-card">
+
+          <a href="/code/posts/PixelFixer" class="work-card">
             <div class="work-card-thumb">
-              <img src="/assets/pixelfixer.jpg" alt="PixelFixer" />
+              <img src="/assets/PixelFixer/PixelFixerCarousel.jpg" alt="PixelFixer" />
             </div>
             <div class="work-card-info">
               <h3>PixelFixer</h3>
-              <p>NukeX · Blinkscript · Firefly Removal</p>
+              <p>NukeX · Blinkscript · Hot Pixel Removal</p>
             </div>
-          </div>
+          </a>
 
-          <div class="work-card">
+          <a href="/code/posts/ColorIsolator" class="work-card">
             <div class="work-card-thumb">
-              <img src="/assets/colorisolator.jpg" alt="ColorIsolator" />
+              <img src="/assets/ColorIsolator/ColorIsolatorCarousel.jpg" alt="ColorIsolator" />
             </div>
             <div class="work-card-info">
               <h3>ColorIsolator</h3>
               <p>NukeX · Blinkscript</p>
             </div>
-          </div>
+          </a>
+
+          <a href="/code/posts/ShellEmitter" class="work-card">
+            <div class="work-card-thumb">
+              <img src="/assets/ShellEjector/ShellEjectorCarousel.jpg" alt="ShellEmitter" />
+            </div>
+            <div class="work-card-info">
+              <h3>ShellEmitter</h3>
+              <p>NukeX · Expression · Python</p>
+            </div>
+          </a>
 
         </div>
       </div>
 
-      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(-1)">&#8250;</button>
+      <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(1)">&#8250;</button>
     </div>
   </section>
 
@@ -106,6 +118,42 @@ import Base from '../layouts/Base.astro';
   let gap = 0;
   let originalCount = 0;
   let initialized = false;
+  let reelPlayer = null;
+
+  function createReelPlayer(frame) {
+    if (reelPlayer || !window.YT || !window.YT.Player) return;
+
+    reelPlayer = new window.YT.Player(frame, {
+      events: {
+        onReady: function (event) {
+          // Best effort: YouTube may still lower quality based on bandwidth/device.
+          event.target.setPlaybackQuality('hd1080');
+        }
+      }
+    });
+  }
+
+  function initReelQuality() {
+    const frame = document.getElementById('demoReelPlayer');
+    if (!frame) return;
+
+    if (window.YT && window.YT.Player) {
+      createReelPlayer(frame);
+      return;
+    }
+
+    if (!document.getElementById('youtube-iframe-api')) {
+      const tag = document.createElement('script');
+      tag.id = 'youtube-iframe-api';
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
+  }
+
+  window.onYouTubeIframeAPIReady = function () {
+    const frame = document.getElementById('demoReelPlayer');
+    if (frame) createReelPlayer(frame);
+  };
 
   function initCarousel() {
     if (initialized) return;          
@@ -143,8 +191,8 @@ import Base from '../layouts/Base.astro';
     track.style.transition = 'none';
     track.style.transform = 'translateX(-' + (current * cardWidth) + 'px)';
     setInterval(function () {
-      scrollCarousel(1);
-    }, 7500);
+      scrollCarousel(-1);
+    }, 5500);
   }
 
   function scrollCarousel(direction) {
@@ -179,7 +227,10 @@ import Base from '../layouts/Base.astro';
     }, 400);
   }
 
-  document.addEventListener('DOMContentLoaded', initCarousel);
+  document.addEventListener('DOMContentLoaded', function () {
+    initCarousel();
+    initReelQuality();
+  });
 </script>
 
 
